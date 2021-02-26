@@ -62,12 +62,12 @@ You can follow the instruction in the readme at this link: https://github.com/Da
 #### 2 Connection to the master istance on AWS by amzkey.pem
 Open a terminal on the Terraform directory where there is the key file and type:
 ```
-ssh -i amzkey.pem /home/ubuntu/[adsress of master istance]
+ssh -i amzkey.pem /home/ubuntu/[address of master instance]
 ```
-Yuo can find the master' address on the AWS console in the istance informations
+Yuo can find the master' address on the AWS console in the instance informations
 
 #### 3 Run Spark and Hadoop on the master
-In the same terminal where you connecting to the master istance, you need to type this command in order to starting Spark and Hadoop:
+In the same terminal where you connecting to the master instance, you need to type this command in order to starting Spark and Hadoop:
 ```
 sh spark-start-master.sh
 ```
@@ -83,7 +83,7 @@ shh [name slave]  //Example ssh s02
 ```
 
 #### 5 Run the slave istances
-On each slave istance you can run this command in order to active the istance for the computation:
+On each slave instance you can run this command in order to active the instance for the computation:
 ```
 sh spark-start-slave.sh
 ```
