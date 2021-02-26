@@ -2,7 +2,8 @@
 
 Distribute tensorflow training and predictions through spark cluster
 
-This source code is useful for working with tensorflow in a distributed mode using Apache Spark.
+This source code is useful for working with tensorflow in a distributed mode using Apache Spark. 
+
 
 We used these packages: \
 Spark 3.0.1\
@@ -54,19 +55,19 @@ In this file, simply we create a plot in order to represent differences in train
 
 ---
 ## Steps to run distribute training and predictions
-Before starting with the configuration you need to download this project and unzip it. 
+#### 1 Before starting with the configuration you need to download this project and unzip it. 
 
-#### 1 AWS istances configuration by Terraform
-You can follow the instruction in the readme at this link: https://github.com/DanyOrtu97/Spark-Terraform-.git in order to configure the Spark cluster on Amazon AWS
+#### 2 AWS istances configuration by Terraform
+You must follow the instruction in the readme at this link: https://github.com/DanyOrtu97/Spark-Terraform-.git in order to configure the Spark cluster on Amazon AWS
 
-#### 2 Connection to the master istance on AWS by amzkey.pem
-Open a terminal on the Terraform directory where there is the key file and type:
+#### 3 Connection to the master istance on AWS by amzkey.pem
+Open a terminal in the "terraform_" directory where there is the key file and type:
 ```
 ssh -i amzkey.pem /home/ubuntu/[address of master instance]
 ```
 Yuo can find the master' address on the AWS console in the instance informations
 
-#### 3 Run Spark and Hadoop on the master
+#### 4 Run Spark and Hadoop on the master
 In the same terminal where you connecting to the master instance, you need to type this command in order to starting Spark and Hadoop:
 ```
 sh spark-start-master.sh
@@ -76,38 +77,38 @@ sh spark-start-master.sh
 sh hadoop-start-master.sh
 ```
 
-#### 4 Connection to slaves istances
+#### 5 Connection to slaves istances
 Now one by one you must connect with the slaves using the command:
 ```
 shh [name slave]  //Example ssh s02
 ```
 
-#### 5 Run the slave istances
+#### 6 Run the slave istances
 On each slave instance you can run this command in order to active the instance for the computation:
 ```
 sh spark-start-slave.sh
 ```
 
-#### 6 Change the Java environment on distribute_training.py
+#### 7 Change the Java environment on distribute_training.py
 Open the project folder of distribute training on spark, already downloaded and open the file distribute_training.py
 ```
 os.environ["JAVA_HOME"] = "/usr/lib/jvm/java-8-openjdk-amd64" //Java home environment path
 ```
 
-#### 7 Change the Spark Home path
+#### 8 Change the Spark Home path
 Open the project folder of distribute training on spark, already downloaded and open the file distribute_training.py
 ```
 os.environ["SPARK_HOME"] = "/opt/spark-3.0.1-bin-hadoop2.7/"
 ```
 
-#### 8 Modify the number of cores to run
+#### 9 Modify the number of cores to run
 If it is necessary you can modify the number of cores that the nodes on the cluster can use. From the master terminal open the file distributed_training.py and change this row (row 64) with the number of cores. 
 Note that we have 8 slave nodes, each of these have 2 cores, so if you start the training with 2 nodes, you should use 4 cores.
 ```
 weights = MirroredStrategyRunner(num_slots=4, spark=spark, use_gpu=False).run(train) //num_slots represent the number of cores
 ```
 
-#### 9 Modify spark_tensorflow_distributor package  
+#### 10 Modify spark_tensorflow_distributor package  
 You must add two rows on the spark_distributor package in order to pass the spark session at this function with spark = spark:
 ```
 weights = MirroredStrategyRunner(num_slots=sc.defaultParallelism, spark=spark, use_gpu=False).run(train)
@@ -131,20 +132,20 @@ if spark is None:
   spark = SparkSession.builder.getOrCreate()
 ```
 
-#### 10 Modify the number of epochs (optional)
+#### 11 Modify the number of epochs (optional)
 You can modify the number of epochs on file distribute_training.py at row 56:
 ```
 multi_worker_model.fit(x=train_datasets, epochs=1, steps_per_epoch=60000//32)
 ```
 
-#### 11 From the master' terminal run the distribute_training.py using this command:
+#### 12 From the master' terminal run the distribute_training.py using this command:
 ```
 python3 distribute_training.py
 ```
 During the training step you can control on the Spark GUI on the browser 
 After the training step yuu have a model saved on the hadoop cluster and you can start the prediction code
 
-#### 12 From the master ' terminal run distribute_prediction_and_test.py using this command:
+#### 13 From the master ' terminal run distribute_prediction_and_test.py using this command:
 ```
 python3 distribute_prediction_and_test.py
 ```
